@@ -162,6 +162,9 @@ class Snake {
                 break;
         }
 
+        // Insert the adjusted point back into position 0
+        segmentLocations.set(0, p);
+
     }
 
     boolean detectDeath() {
@@ -182,7 +185,6 @@ class Snake {
             // Have any of the sections collided with the head
             if (segmentLocations.get(0).x == segmentLocations.get(i).x &&
                     segmentLocations.get(0).y == segmentLocations.get(i).y) {
-
                 dead = true;
             }
         }
