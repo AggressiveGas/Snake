@@ -8,7 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
-class Apple {
+public class Apple {
 
     // The location of the apple on the grid
     // Not in pixels
@@ -23,7 +23,7 @@ class Apple {
     private Bitmap mBitmapApple;
 
     /// Set up the apple in the constructor
-    Apple(Context context, Point sr, int s){
+    public Apple(Context context, Point sr, int s){
 
         // Make a note of the passed in spawn range
         mSpawnRange = sr;
@@ -40,7 +40,7 @@ class Apple {
     }
 
     // This is called every time an apple is eaten
-    void spawn(){
+    public void spawn(){
         // Choose two random values and place the apple
         Random random = new Random();
         location.x = random.nextInt(mSpawnRange.x) + 1;
@@ -49,12 +49,12 @@ class Apple {
 
     // Let SnakeGame know where the apple is
     // SnakeGame can share this with the snake
-    Point getLocation(){
+    public Point getLocation(){
         return location;
     }
 
     // Draw the apple
-    void draw(Canvas canvas, Paint paint){
+    public void draw(Canvas canvas, Paint paint){
         canvas.drawBitmap(mBitmapApple,
                 location.x * mSize, location.y * mSize, paint);
 

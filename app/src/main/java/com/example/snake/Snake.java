@@ -44,7 +44,7 @@ public class Snake implements IMovable {
     private Bitmap mBitmapBody;
 
 
-    Snake(Context context, Point mr, int ss) {
+    public Snake(Context context, Point mr, int ss) {
 
         // Initialize our ArrayList
         segmentLocations = new ArrayList<>();
@@ -114,7 +114,7 @@ public class Snake implements IMovable {
     }
 
     // Get the snake ready for a new game
-    void reset(int w, int h) {
+    public void reset(int w, int h) {
 
         // Reset the heading
         heading = Heading.RIGHT;
@@ -167,7 +167,7 @@ public class Snake implements IMovable {
 
     }
 
-    boolean detectDeath() {
+    public boolean detectDeath() {
         // Has the snake died?
         boolean dead = false;
 
@@ -191,7 +191,7 @@ public class Snake implements IMovable {
         return dead;
     }
 
-    boolean checkDinner(Point l) {
+    public boolean checkDinner(Point l) {
         //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {
         if (segmentLocations.get(0).x == l.x &&
                 segmentLocations.get(0).y == l.y) {
@@ -207,7 +207,7 @@ public class Snake implements IMovable {
         return false;
     }
 
-    void draw(Canvas canvas, Paint paint) {
+    public void draw(Canvas canvas, Paint paint) {
 
         // Don't run this code if ArrayList has nothing in it
         if (!segmentLocations.isEmpty()) {
@@ -260,7 +260,7 @@ public class Snake implements IMovable {
 
 
     // Handle changing direction
-    void switchHeading(MotionEvent motionEvent) {
+    public void switchHeading(MotionEvent motionEvent) {
 
         // Is the tap on the right hand side?
         if (motionEvent.getX() >= halfWayPoint) {
