@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class Snake implements IMovable {
+public class Snake extends GameObject implements IMovable {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -20,7 +20,7 @@ public class Snake implements IMovable {
     private int mSegmentSize;
 
     // How big is the entire grid
-    private Point mMoveRange;
+    //private Point mMoveRange;
 
     // Where is the centre of the screen
     // horizontally in pixels?
@@ -45,6 +45,7 @@ public class Snake implements IMovable {
 
 
     public Snake(Context context, Point mr, int ss) {
+        super(mr);
 
         // Initialize our ArrayList
         segmentLocations = new ArrayList<>();
@@ -52,7 +53,7 @@ public class Snake implements IMovable {
         // Initialize the segment size and movement
         // range from the passed in parameters
         mSegmentSize = ss;
-        mMoveRange = mr;
+        //mMoveRange = mr;
 
         // Create and scale the bitmaps
         mBitmapHeadRight = BitmapFactory
@@ -110,7 +111,7 @@ public class Snake implements IMovable {
 
         // The halfway point across the screen in pixels
         // Used to detect which side of screen was pressed
-        halfWayPoint = mr.x * ss / 2;
+        halfWayPoint = this.getRangeX() * ss / 2;
     }
 
     // Get the snake ready for a new game
@@ -173,9 +174,9 @@ public class Snake implements IMovable {
 
         // Hit any of the screen edges
         if (segmentLocations.get(0).x == -1 ||
-                segmentLocations.get(0).x > mMoveRange.x ||
+                segmentLocations.get(0).x > this.getRangeX() ||
                 segmentLocations.get(0).y == -1 ||
-                segmentLocations.get(0).y > mMoveRange.y) {
+                segmentLocations.get(0).y > this.getRangeY()) {
 
             dead = true;
         }
@@ -191,10 +192,10 @@ public class Snake implements IMovable {
         return dead;
     }
 
-    public boolean checkDinner(Point l) {
+    public boolean checkDinner(int x, int y) {
         //if (snakeXs[0] == l.x && snakeYs[0] == l.y) {
-        if (segmentLocations.get(0).x == l.x &&
-                segmentLocations.get(0).y == l.y) {
+        if (segmentLocations.get(0).x == x &&
+                segmentLocations.get(0).y == y) {
 
             // Add a new Point to the list
             // located off-screen.
@@ -207,6 +208,7 @@ public class Snake implements IMovable {
         return false;
     }
 
+    @Override
     public void draw(Canvas canvas, Paint paint) {
 
         // Don't run this code if ArrayList has nothing in it

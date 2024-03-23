@@ -96,6 +96,8 @@ public class SnakeGame extends SurfaceView implements Runnable{
         mApple = new Apple(context,
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
+                new Point(-10,
+                        0),
                 blockSize);
 
         mSnake = new Snake(context,
@@ -171,7 +173,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
         mSnake.move();
 
         // Did the head of the snake eat the apple?
-        if(mSnake.checkDinner(mApple.getLocation())){
+        if(mSnake.checkDinner(mApple.getLocationX(), mApple.getLocationY())){
             // This reminds me of Edge of Tomorrow.
             // One day the apple will be ready!
             mApple.spawn();

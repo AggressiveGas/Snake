@@ -8,29 +8,30 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import java.util.Random;
 
-public class Apple {
+public class Apple extends GameObject {
 
     // The location of the apple on the grid
     // Not in pixels
-    private Point location = new Point();
+    //private Point location = new Point();
 
     // The range of values we can choose from
     // to spawn an apple
-    private Point mSpawnRange;
+    //private Point mSpawnRange;
     private int mSize;
 
     // An image to represent the apple
     private Bitmap mBitmapApple;
 
     /// Set up the apple in the constructor
-    public Apple(Context context, Point sr, int s){
+    public Apple(Context context, Point sr, Point loc, int s) {
+        super(sr, loc);
 
         // Make a note of the passed in spawn range
-        mSpawnRange = sr;
+        //mSpawnRange = sr;
         // Make a note of the size of an apple
         mSize = s;
         // Hide the apple off-screen until the game starts
-        location.x = -10;
+        //location.x = -10;
 
         // Load the image to the bitmap
         mBitmapApple = BitmapFactory.decodeResource(context.getResources(), R.drawable.apple);
@@ -40,23 +41,24 @@ public class Apple {
     }
 
     // This is called every time an apple is eaten
-    public void spawn(){
+    public void spawn() {
         // Choose two random values and place the apple
         Random random = new Random();
-        location.x = random.nextInt(mSpawnRange.x) + 1;
-        location.y = random.nextInt(mSpawnRange.y - 1) + 1;
+        this.setLocationX(random.nextInt(this.getRangeX()) + 1);
+        this.setLocationY(random.nextInt(this.getRangeY() - 1) + 1);
     }
 
     // Let SnakeGame know where the apple is
     // SnakeGame can share this with the snake
-    public Point getLocation(){
+    /*public int getLocation() {
         return location;
-    }
+    }*/
 
     // Draw the apple
-    public void draw(Canvas canvas, Paint paint){
+    @Override
+    public void draw(Canvas canvas, Paint paint) {
         canvas.drawBitmap(mBitmapApple,
-                location.x * mSize, location.y * mSize, paint);
+                this.getLocationX() * mSize, this.getLocationY() * mSize, paint);
 
     }
 
