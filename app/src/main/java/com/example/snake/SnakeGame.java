@@ -100,7 +100,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
                         0),
                 blockSize);
 
-        mSnake = new Snake(context,
+        mSnake = new SnakeNormal(context,
                 new Point(NUM_BLOCKS_WIDE,
                         mNumBlocksHigh),
                 blockSize);
@@ -112,7 +112,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
     public void newGame() {
 
         // reset the snake
-        mSnake.reset(NUM_BLOCKS_WIDE, mNumBlocksHigh);
+        mSnake.spawn(NUM_BLOCKS_WIDE, mNumBlocksHigh);
 
         // Get the apple ready for dinner
         mApple.spawn();

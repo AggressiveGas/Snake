@@ -11,7 +11,7 @@ import android.view.MotionEvent;
 
 import java.util.ArrayList;
 
-public class Snake extends GameObject implements IMovable {
+public abstract class Snake extends GameObject implements IMovable, ITurnable {
 
     // The location in the grid of all the segments
     private ArrayList<Point> segmentLocations;
@@ -27,12 +27,12 @@ public class Snake extends GameObject implements IMovable {
     private int halfWayPoint;
 
     // For tracking movement Heading
-    private enum Heading {
+    protected enum Heading {
         UP, RIGHT, DOWN, LEFT
     }
 
     // Start by heading to the right
-    private Heading heading = Heading.RIGHT;
+    protected Heading heading = Heading.RIGHT;
 
     // A bitmap for each direction the head can face
     private Bitmap mBitmapHeadRight;
@@ -115,7 +115,7 @@ public class Snake extends GameObject implements IMovable {
     }
 
     // Get the snake ready for a new game
-    public void reset(int w, int h) {
+    public void spawn(int w, int h) {
 
         // Reset the heading
         heading = Heading.RIGHT;
@@ -299,5 +299,13 @@ public class Snake extends GameObject implements IMovable {
                     break;
             }
         }
+    }
+
+    public ArrayList<Point> getSegmentLocations() {
+        return segmentLocations;
+    }
+
+    public Heading getHeading() {
+        return heading;
     }
 }
