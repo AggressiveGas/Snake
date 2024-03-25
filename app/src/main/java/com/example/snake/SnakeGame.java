@@ -3,10 +3,13 @@ package com.example.snake;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -15,6 +18,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class SnakeGame extends SurfaceView implements Runnable{
 
@@ -25,6 +29,7 @@ public class SnakeGame extends SurfaceView implements Runnable{
     // Is the game currently playing and or paused?
     private volatile boolean mPlaying = false;
     private volatile boolean mPaused = true;
+    private Bitmap mBitmapBackground;
 
     // for playing sound effects
     private SoundPool mSP;
@@ -47,6 +52,11 @@ public class SnakeGame extends SurfaceView implements Runnable{
     private Snake mSnake;
     // And an apple
     private Apple mApple;
+    private Hud mHud;
+    private Background mBackground;
+    private Typeface type;
+    private int width;
+    private int height;
 
 
     // This is the constructor method that gets called
@@ -105,6 +115,14 @@ public class SnakeGame extends SurfaceView implements Runnable{
                         mNumBlocksHigh),
                 blockSize);
 
+        mHud = new Hud(size);
+        mBackground = new Background(context, size);
+
+        type = Typeface.createFromAsset(getContext().getAssets(), "font/shortbaby_mg2w.ttf");
+        mPaint.setTypeface(type);
+
+        this.width = size.x;
+        this.height = size.y;
     }
 
 
@@ -123,7 +141,6 @@ public class SnakeGame extends SurfaceView implements Runnable{
         // Setup mNextFrameTime so an update can triggered
         mNextFrameTime = System.currentTimeMillis();
     }
-
 
     // Handles the game loop
     @Override
@@ -203,7 +220,8 @@ public class SnakeGame extends SurfaceView implements Runnable{
             mCanvas = mSurfaceHolder.lockCanvas();
 
             // Fill the screen with a color
-            mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+            //mCanvas.drawColor(Color.argb(255, 26, 128, 182));
+            mBackground.draw(mCanvas, mPaint);
 
             // Set the size and color of the mPaint for the text
             mPaint.setColor(Color.argb(255, 255, 255, 255));
@@ -212,25 +230,21 @@ public class SnakeGame extends SurfaceView implements Runnable{
             // Draw the score
             mCanvas.drawText("" + mScore, 20, 120, mPaint);
 
-            // Draw the apple and the snake
+            namesText();
+
+            // Draw the hud, apple and the snake
+            mHud.draw(mCanvas, mPaint);
             mApple.draw(mCanvas, mPaint);
             mSnake.draw(mCanvas, mPaint);
 
-            // Draw some text while paused
-            if(mPaused){
-
-                // Set the size and color of the mPaint for the text
-                mPaint.setColor(Color.argb(255, 255, 255, 255));
-                mPaint.setTextSize(250);
-
-                // Draw the message
-                // We will give this an international upgrade soon
-                //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
-                mCanvas.drawText(getResources().
-                                getString(R.string.tap_to_play),
-                        200, 700, mPaint);
+            // Draw some text while paused from starting new game
+            if(mPaused) {
+                playText();
             }
 
+            if (!mPlaying) {
+                pauseText();
+            }
 
             // Unlock the mCanvas and reveal the graphics for this frame
             mSurfaceHolder.unlockCanvasAndPost(mCanvas);
@@ -239,8 +253,23 @@ public class SnakeGame extends SurfaceView implements Runnable{
 
     @Override
     public boolean onTouchEvent(MotionEvent motionEvent) {
+        int i = motionEvent.getActionIndex();
+        int x = (int) motionEvent.getX(i);
+        int y = (int) motionEvent.getY(i);
+
+        //int eventType = motionEvent.getAction() & MotionEvent.ACTION_MASK;
+
         switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
             case MotionEvent.ACTION_UP:
+                ArrayList<Rect> buttons = mHud.getControls();
+                if (buttons.get(Hud.PAUSE).contains(x, y)) {
+                    if (mPlaying && !mPaused) {
+                        pause();
+                    } else {
+                        resume();
+                    }
+                    break;
+                }
                 if (mPaused) {
                     mPaused = false;
                     newGame();
@@ -249,9 +278,11 @@ public class SnakeGame extends SurfaceView implements Runnable{
                     return true;
                 }
 
-                // Let the Snake class handle the input
-                mSnake.switchHeading(motionEvent);
-                break;
+                if (mPlaying) {
+                    // Let the Snake class handle the input
+                    mSnake.switchHeading(motionEvent);
+                    break;
+                }
 
             default:
                 break;
@@ -278,4 +309,44 @@ public class SnakeGame extends SurfaceView implements Runnable{
         mThread = new Thread(this);
         mThread.start();
     }
+
+    public void playText() {
+        // Set the size and color of the mPaint for the text
+        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mPaint.setTextSize(250);
+
+        // Draw the message
+        // We will give this an international upgrade soon
+        //mCanvas.drawText("Tap To Play!", 200, 700, mPaint);
+        mCanvas.drawText(getResources().
+                        getString(R.string.tap_to_play),
+                200, 700, mPaint);
+    }
+
+    public void pauseText() {
+        // Set the size and color of the mPaint for the text
+        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mPaint.setTextSize(250);
+
+        // Draw the message
+        mCanvas.drawText(getResources().
+                        getString(R.string.pause),
+                200, 700, mPaint);
+    }
+
+    public void namesText() {
+        // Set the size and color of the mPaint for the text
+        mPaint.setColor(Color.argb(255, 255, 255, 255));
+        mPaint.setTextSize(50);
+
+        // Draw the message
+        mCanvas.drawText(getResources().
+                        getString(R.string.kevin),
+                width-((float) width /5), 50, mPaint);
+
+        mCanvas.drawText(getResources().
+                        getString(R.string.brandon),
+                width-((float) width /5), 100, mPaint);
+    }
+
 }

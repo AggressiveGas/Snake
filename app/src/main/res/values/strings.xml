@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Snake</string>
     <string name="tap_to_play">Tap To Play!</string>
+    <string name="pause">Paused</string>
+    <string name="kevin">Kevin Esquivel</string>
+    <string name="brandon">Brandon Symansiv</string>
 </resources>
